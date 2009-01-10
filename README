@@ -1,0 +1,3 @@
+uses pal (http://common-lisp.net/project/pal/), which is not included
+
+tested on linux/amd64 and sbcl 1.0.18
