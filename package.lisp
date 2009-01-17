@@ -1,3 +1,3 @@
 (defpackage robots
-  (:use :cl :pal)
+  (:use :cl :pal :sb-thread)
   (:export run))

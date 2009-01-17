@@ -1,0 +1,1 @@
+../site/pal/pal.asd

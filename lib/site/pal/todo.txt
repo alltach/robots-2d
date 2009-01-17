@@ -1,0 +1,43 @@
+TODO:
+
+- Make sure resources are loaded only once.
+
+- Fix offsets in draw-image (shouldn't need transformations).
+
+- Polygon smooth hint?
+
+- Add align, scale, mirror and angle options to DRAW-IMAGE*.
+
+- Better clipping.
+
+- Structured color values.
+
+- Utilities for interfacing with CL-Imago.
+
+- Better drawing primitives. Real lines, complex polygons, start/end args to draw-circle etc.
+
+- As always, optimise GL state handling. Blitting in batches, possibly VOBs.
+
+- Implement "tiles" and animation.
+
+- Box/box/line/circle etc. overlap functions, faster v-dist.
+
+- Correct aspect ratio when fullscreen on widescreen displays.
+
+- I would really like to see it run on OS X.
+
+- Documentation and tutorials.
+
+
+
+As separate projects on top of PAL:
+
+- GUI, work in progress.
+
+- Native CL font resource builder.
+
+- TTF support.
+
+- Some sort of sprite library?
+
+- Network code?

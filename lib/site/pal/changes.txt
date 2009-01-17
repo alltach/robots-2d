@@ -1,0 +1,131 @@
+1.1, October 31 2007
+
+- Fixed handling of texture sizes. Changed the location of application data folder on windows.
+
+- Fixed handling of coordinates in WITH-CLIPPING.
+
+- MESSAGE now accepts multiple arguments.
+
+- KEYSYM-CHAR now returns NIL for characters out the range 1 - 255.
+
+- Added fading arguments to play-music/halt-music.
+
+- RESET-BLEND-MODE renamed to RESET-BLEND.
+
+- Smoothp option now mostly works with filled polygons.
+
+- Minor cleanups and name changes: circles-overlap => circles-overlap-p,
+  point-inside-rectangle => point-inside-rectangle-p, point-in-line => point-in-line-p.
+
+- Optimised GL state handling. Image drawing is a lot faster under certain
+  conditions.
+
+- Added color.lisp, WITH-BLEND now uses COLOR struct instead of a list of rgba
+  values.
+
+- Removed CURRY.
+
+
+
+1.0, July 28 2007
+
+- Numerous bugfixes and little improvements.
+
+- Much faster DRAW-TEXT.
+
+- Removed DRAW-QUAD in favour of DRAW-POLYGON*
+
+- Added ALIGN arguments to DRAW-IMAGE
+
+- DRAW-IMAGE-PART renamed to DRAW-IMAGE*
+
+- Added some examples.
+
+- Automatic coersion of numeric types.
+
+- RELT renamed to RANDOM-ELEMENT.
+
+- Added DRAW-ARROW, DRAW-CIRCLE, LOAD-IMAGE-TO-ARRAY, SCREEN-TO-ARRAY,
+  IMAGE-FROM-FN.
+
+- Tag thunks must now return only objects of type RESOURCE.
+
+- Many small and not so small changes in the API.
+
+- Fixed problems loading the foreign .so's under Linux.
+
+
+
+Release 3, July 3 2007
+
+- Changed some of the parameters to sound functions. Volume is now defined as a
+  value between 0 - 255 instead of 0 - 128.
+
+- Removed the MOUSE-BUTTON-DOWN/UP-FNs from event handling functions. Use
+  KEY-*-FNs instead.
+
+- Loading bitmaps should be a lot faster now.
+
+- Fixed the Lispworks bugs.
+
+- Renamed GL-PAL system to PAL.
+
+- MESSAGE is now a function that just prints it argument.
+
+- Added DRAW-ARROW.
+
+- Changed TEXT-SIZE to GET-TEXT-SIZE.
+
+- Changed REGISTER-RESOURCE, FREE-RESOURCE, FREE-ALL-RESOURCES, OPEN-PAL and
+  CLOSE-PAL into public generic functions.
+
+- Foreign libraries are now loaded with CFFI:USE-FOREIGN-LIBRARIES. There is now
+  a function PAL:LOAD-FOREIGN-LIBRARIES that can be used to (re)load the shared
+  libs when needed (mainly to be used when delivering images with CLisp)
+
+- Renamed SDL packages name to PAL-FFI and sdl.lisp file to ffi.lisp
+
+- Samples and musics are now wrapped in structures, cleaned up resource
+  handling.
+
+- Replaced WITH-MATRIX and WITH-TRANSLATION with WITH-TRANSFORMATION.
+
+- Added RANDOMLY macro.
+
+
+
+Release 2, May 19 2007
+
+- Tested on Linux/ia32 (Ubuntu 7.04, SBCL 1.05).
+
+- Cleaned up the font reader a bit.
+
+- Pathname fixing; added ext:probe-directory for clisp, pathnamified the
+  application folder/file functions and added basic *nix app-dir support.
+
+- Cleaned up the type declarations a bit.
+
+- MATCH-PRESSED-KEYS is now called TEST-KEYS.
+
+- Fixed V-ANGLE since (atan 0 0) errors with DIVISION-BY-ZERO under (at least)
+  CLisp.
+
+- Some of the examples had floating point errors under CLisp. Fixed with #+CLISP
+  EXT:WITHOUT-FLOATING-POINT-UNDERFLOWS.
+
+- Source directory of PAL is automatically added to the default search paths (to
+  allow PAL to find 'DEFAULT-FONT).
+
+- Added a default font (tag 'PAL::DEFAULT-FONT, mainly for debuggin purposes)
+  and changed the order of font & position args in text functions.
+
+- Removed the font argument from DRAW-FPS. It now uses the default font.
+
+- Added the MESSAGE macro.
+
+
+
+Release 1, March 14 2007
+
+- I changed my original Pixel Art Library from using software rendering to
+  OpenGL. First release.
