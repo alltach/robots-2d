@@ -1,3 +1,11 @@
-uses pal (http://common-lisp.net/project/pal/), which is not included
+| | | | | | | | | | | | | | | | | | | | | | | | |
+=================================================
+=================================================
+uses pal ( http://common-lisp.net/project/pal/ )
+only tested on sbcl/linux
 
-tested on linux/amd64 and sbcl 1.0.18
+currently depends on sb-thread, 
+but i intend to port over to ecl soon
+=================================================
+=================================================
+| | | | | | | | | | | | | | | | | | | | | | | | |
