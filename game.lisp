@@ -1,4 +1,5 @@
 (in-package :robots) 
+(declaim (optimize (debug 1)))
 
 (defvar *resource-path* 
   (merge-pathnames "res/" (asdf:component-pathname 
@@ -34,7 +35,7 @@
   (declare (ignore game))
   (typecase evt
      (key-down-event (if (eq (key-event-key evt) :key-space)
-			 (sb-ext:quit)
+			 (thread-exit)
 			 (format t "~a :: ~a~%" (event-time evt) (key-event-key evt))))
      (mouse-button-down-event (format t "~a :: button ~a @ (~a,~a)~%" (event-time evt) (mouse-event-button evt)
 				      (vx (mouse-event-pos evt))

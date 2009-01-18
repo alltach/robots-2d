@@ -73,7 +73,6 @@
   (:documentation "Handle a single game event"))
 
 (defmethod handle-event ((rec event-receiver) (ev event))
-  (declare (ignore rec ev))
   nil)
 
 
@@ -107,35 +106,31 @@
   "Run the game: Fork off an event-handling/time-counting thread and wait for
 events to appear on the event queue. Let the game handle them."
   (let ((evtq-mutex (make-mutex :name "event queue mutex"))
-	(evtq (make-queue))
-	(quit-mutex (make-mutex :name "quit mutex"))
-	(quit nil))    
+	(evtq (make-queue)))
     (with-pal (:title title :width width :height height :fps fps :paths paths)
       (let ((event-thread
-	     (make-thread #'(lambda ()
-			      (macrolet ((eventfn (event-type-form lambda-list &rest other-keys)
-					   `(lambda ,lambda-list
-					      (with-mutex (evtq-mutex)
-						(enqueue (make-instance ,event-type-form
-									:time (get-internal-real-time) 
-						                        ,@other-keys)
-							 evtq)))))
-				(pal:event-loop (:key-up-fn (eventfn 'key-up-event (key) :key key)
-						 :key-down-fn (eventfn 'key-down-event (key) :key key)
-						 :mouse-btn-up-fn (eventfn 'mouse-button-up-event (btn pos) :button btn :pos pos)
-						 :mouse-btn-down-fn (eventfn 'mouse-button-down-event (btn pos) :button btn :pos pos)
-						 :mouse-motion-fn (eventfn 'mouse-move-event (x y) :pos (v x y)))
-				  (when (with-mutex (quit-mutex) quit) (return-from event-loop)) ;; fixme: remove quit mutex
-				  (thread-yield)))))))
+	     (fork-function 
+	      #'(lambda ()
+		  (macrolet ((eventfn (event-type-form lambda-list &rest other-keys)
+			       `(lambda ,lambda-list
+				  (with-mutex (evtq-mutex)
+				    (enqueue (make-instance ,event-type-form
+							    :time (get-internal-real-time) 
+							    ,@other-keys)
+					     evtq)))))
+		    (pal:event-loop (:key-up-fn (eventfn 'key-up-event (key) :key key)
+						:key-down-fn (eventfn 'key-down-event (key) :key key)
+						:mouse-btn-up-fn (eventfn 'mouse-button-up-event (btn pos) :button btn :pos pos)
+						:mouse-btn-down-fn (eventfn 'mouse-button-down-event (btn pos) :button btn :pos pos)
+						:mouse-motion-fn (eventfn 'mouse-move-event (x y) :pos (v x y)))
+		      (thread-yield)))))))
 	(unwind-protect (loop 
 			   (aif (with-mutex (evtq-mutex) 
 				  (if (empty-p evtq)
 				      nil
 				      (dequeue evtq)))
 				(handle-event game it)))
-	  (with-mutex (quit-mutex) ;; reached when quit
-	    (setf quit t))
-	  (join-thread event-thread))))))
+	  (thread-interrupt event-thread #'thread-exit))))))
 	
 
 ;;; Generic sprite

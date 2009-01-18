@@ -1,21 +1,51 @@
 (in-package :robots)
+(declaim (optimize (debug 1)))
 
-
+;; pg, y'know
 (defmacro aif (c th &optional el)
   `(let ((it ,c))
      (if it ,th ,el)))
 
-;;;;;;;;;;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;;; Stolen from clocc
+;; threading
+(defmacro with-mutex ((var) &body body)
+  `(#+:sbcl sb-thread:with-mutex 
+    #+:ecl  mp:with-lock
+       (,var)
+       ,@body))
+
+(declaim (inline make-mutex fork-function thread-yield thread-exit thread-interrupt))
+(defun make-mutex (&key (name ""))
+  (#+:sbcl sb-thread:make-mutex
+   #+:ecl  mp:make-lock
+   :name name))
+
+(defun fork-function (function &key (name 'a))
+  #+:sbcl (sb-thread:make-thread function :name name)
+  #+:ecl  (mp:process-run-function name function))
+
+(defun thread-yield ()
+  (#+:sbcl sb-thread:thread-yield
+   #+:ecl  mp:process-yield))
+
+(defun thread-exit ()
+  (#+:sbcl sb-ext:quit
+   #+:ecl  mp:exit-process))
+
+(defun thread-interrupt (thread function)
+  (#+:sbcl sb-thread:interrupt-thread
+   #+:ecl  mp:interrupt-process
+   thread function))
+     
+
+;;; Stolen from clocc
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; beginning of file -- queues.lisp ---
+;;;
+;;; Copyright (c) 2009 Felix Lange
 ;;; Copyright (c) 1992 - 2000 Marco Antoniotti. All rights reserved.
 ;;; This software is released under the terms of the GNU Lesser General
 ;;; Public License (LGPL, see file COPYRIGHT for details).
-
 ;;;============================================================================
 ;;; Documentation (initial)
 ;;;
@@ -67,8 +97,6 @@
 ;;;    in turn.  If supplied, QUEUE-RESULT is returned at the end of the
 ;;;    iteration.
 ;;;
-
-
 
 (defstruct queue
   "The QUEUE data type."
