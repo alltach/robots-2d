@@ -4,7 +4,14 @@
   (:use :cl :asdf))
 (in-package :robots.system)
 
-(pushnew #p"lib/systems/" *central-registry*)
+(pushnew (merge-pathnames
+	  #P"lib/systems/"
+	  (make-pathname :name nil 
+			 :type nil 
+			 :version nil
+			 :defaults
+			 (truename (asdf:system-definition-pathname '#:robots))))
+	 asdf:*central-registry*)
 
 (defsystem "robots"
   :description "2d robot-game prototype"
@@ -16,3 +23,4 @@
 				     (:file "utils")))
 	       (:file "package")
 	       (:file "game" :depends-on ("package" "fw"))))
+
